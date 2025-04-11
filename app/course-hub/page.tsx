@@ -2,14 +2,25 @@
 
 import { useState, useEffect } from "react"
 import { Card, CardContent } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Skeleton } from "@/components/ui/skeleton"
-import { Search, Star, Users, Clock, ShoppingCart, BookOpen, Tag } from "lucide-react"
+import { Search, Star, Users, ShoppingCart, BookOpen } from "lucide-react"
 import { FeaturedCourseCard } from "../courses/components/featured-course-card"
+import { FaListUl } from "react-icons/fa"
+import { MdSlowMotionVideo } from "react-icons/md"
+import { SiPython, SiJavascript, SiReact, SiDatacamp } from "react-icons/si"
+import { FaCode } from "react-icons/fa"
+
+// Utility function to format numbers
+const formatNumber = (num: number): string => {
+  if (num >= 1000) {
+    return `${(num / 1000).toFixed(1)}k`
+  }
+  return num.toString()
+}
 
 // Mock data for available courses
 const availableCourses = [
@@ -28,6 +39,10 @@ const availableCourses = [
     level: "Intermediate",
     tags: ["data science", "python", "machine learning"],
     featured: true,
+    icon: SiDatacamp,
+    bannerColor: "rgb(230, 230, 250)",
+    topics: 24,
+    videos: 65,
   },
   {
     id: "javascript-mastery",
@@ -43,6 +58,10 @@ const availableCourses = [
     level: "All Levels",
     tags: ["javascript", "web development", "programming"],
     featured: true,
+    icon: SiJavascript,
+    bannerColor: "rgb(255, 251, 214)",
+    topics: 20,
+    videos: 48,
   },
   {
     id: "react-essentials",
@@ -58,6 +77,10 @@ const availableCourses = [
     level: "Beginner",
     tags: ["react", "javascript", "web development"],
     featured: false,
+    icon: SiReact,
+    bannerColor: "rgb(217, 242, 255)",
+    topics: 15,
+    videos: 42,
   },
   {
     id: "machine-learning",
@@ -73,6 +96,10 @@ const availableCourses = [
     level: "Intermediate",
     tags: ["machine learning", "python", "data science"],
     featured: false,
+    icon: SiPython,
+    bannerColor: "rgb(255, 218, 205)",
+    topics: 18,
+    videos: 55,
   },
   {
     id: "advanced-data-structures",
@@ -88,6 +115,10 @@ const availableCourses = [
     level: "Advanced",
     tags: ["algorithms", "data structures", "computer science"],
     featured: false,
+    icon: FaCode,
+    bannerColor: "rgb(220, 242, 233)",
+    topics: 22,
+    videos: 60,
   },
   {
     id: "python-for-data-analysis",
@@ -103,11 +134,39 @@ const availableCourses = [
     level: "Intermediate",
     tags: ["python", "data analysis", "pandas"],
     featured: false,
+    icon: SiPython,
+    bannerColor: "rgb(255, 218, 205)",
+    topics: 16,
+    videos: 45,
   },
 ]
 
 // Get featured course
 const featuredCourse = availableCourses.find((course) => course.featured && course.id === "data-science")
+
+// Rating renderer function
+const renderRating = (rating: number) => {
+  const fullStars = Math.floor(rating)
+  const hasHalfStar = rating % 1 !== 0
+  const stars = []
+
+  for (let i = 0; i < 5; i++) {
+    if (i < fullStars) {
+      stars.push(<Star key={i} className="text-yellow-400 fill-yellow-400" size={14} />)
+    } else if (i === fullStars && hasHalfStar) {
+      stars.push(<Star key={i} className="text-yellow-400 fill-yellow-400" size={14} />)
+    } else {
+      stars.push(<Star key={i} className="text-gray-300" size={14} />)
+    }
+  }
+
+  return (
+    <div className="flex items-center gap-1">
+      <div className="flex">{stars}</div>
+      <span className="text-sm text-gray-600">{rating.toFixed(1)}</span>
+    </div>
+  )
+}
 
 export default function CourseHubPage() {
   const [loading, setLoading] = useState(true)
@@ -286,69 +345,62 @@ export default function CourseHubPage() {
         {filteredCourses.length > 0 ? (
           filteredCourses.map((course) => (
             <Card key={course.id} className="overflow-hidden hover:shadow-md transition-all">
-              <CardContent className="p-0">
-                <div className="p-6">
-                  <div className="flex justify-between items-start mb-4">
-                    <h3 className="font-semibold text-lg">{course.title}</h3>
-                    {course.originalPrice > course.price && (
-                      <Badge variant="outline" className="bg-green-500/10 text-green-500">
-                        Sale
-                      </Badge>
-                    )}
-                  </div>
-
-                  <p className="text-sm text-muted-foreground mb-4">{course.instructor}</p>
-
-                  <p className="text-sm text-muted-foreground mb-4 line-clamp-2">{course.description}</p>
-
-                  <div className="flex flex-wrap gap-4 mb-4">
-                    <div className="flex items-center gap-1">
-                      <Star className="h-4 w-4 text-yellow-500 fill-yellow-500" />
-                      <span className="font-medium">{course.rating}</span>
-                      <span className="text-muted-foreground">({course.ratingCount})</span>
-                    </div>
-
-                    <div className="flex items-center gap-1 text-sm text-muted-foreground">
-                      <Users className="h-4 w-4" />
-                      <span>{course.students.toLocaleString()} students</span>
-                    </div>
-
-                    <div className="flex items-center gap-1 text-sm text-muted-foreground">
-                      <Clock className="h-4 w-4" />
-                      <span>{course.duration}</span>
-                    </div>
-                  </div>
-
-                  <div className="flex flex-wrap gap-2 mb-4">
-                    <Badge variant="outline" className="text-xs">
+              <CardContent className="p-0 flex flex-col h-full justify-between">
+                {/* Top section with colored background */}
+                <div className="p-6 h-full" style={{ backgroundColor: course.bannerColor }}>
+                  <div className="flex flex-row items-center justify-between">
+                    <div className="bg-white dark:bg-[#121212] inline-block px-4 py-0.5 text-xs font-medium rounded-full text-gray-800 dark:text-white">
                       {course.level}
-                    </Badge>
-                    {course.tags.map((tag) => (
-                      <Badge key={tag} variant="secondary" className="text-xs">
-                        {tag}
-                      </Badge>
-                    ))}
+                    </div>
+                    <div className="w-10 h-10 bg-white dark:bg-[#121212] rounded-lg flex justify-center items-center text-gray-800 dark:text-white">
+                      {course.icon && <course.icon size={25} />}
+                    </div>
                   </div>
 
-                  <div className="flex items-center justify-between">
+                  {/* Title */}
+                  <div className="text-xl font-bold mt-2.5 pl-1.5 leading-[30px] text-gray-800">{course.title}</div>
+
+                  {/* Stats Section */}
+                  <div className="flex flex-row items-center gap-1 pl-1.5 pt-1.5">
+                    <div className="text-[11px] text-gray-600 flex flex-row items-center justify-center gap-0.5">
+                      <FaListUl size={14} />
+                      <span>{course.topics} Topics</span>
+                    </div>
+                    <span className="text-gray-400 text-sm font-medium">|</span>
+                    <div className="text-[11px] text-gray-600 flex flex-row items-center justify-center gap-0.5">
+                      <MdSlowMotionVideo size={15} />
+                      <span>{course.videos} Videos</span>
+                    </div>
+                  </div>
+
+                  {/* Rating */}
+                  <div className="mt-2 pl-1.5">{renderRating(course.rating)}</div>
+
+                  {/* Description */}
+                  <div className="mt-2 text-[13px] pl-1.5 text-gray-600 line-clamp-2">{course.description}</div>
+
+                  {/* Students count */}
+                  <div className="mt-3 pl-1.5 flex items-center text-xs text-gray-600 dark:text-gray-400">
+                    <Users className="h-4 w-4 mr-1" />
+                    <span>{formatNumber(course.students)} students enrolled</span>
+                  </div>
+                </div>
+
+                {/* Bottom section with price and enroll button */}
+                <div className="bg-white dark:bg-[#121212] p-4">
+                  <div className="flex justify-between items-center">
                     <div className="flex items-center gap-2">
                       <span className="text-xl font-bold">${course.price}</span>
                       {course.originalPrice > course.price && (
                         <span className="text-sm text-muted-foreground line-through">${course.originalPrice}</span>
                       )}
                     </div>
-                  </div>
-                </div>
 
-                <div className="border-t p-4 bg-muted/30 flex justify-between items-center">
-                  <span className="text-sm text-muted-foreground">
-                    <Tag className="h-4 w-4 inline mr-1" />
-                    {course.tags[0]}
-                  </span>
-                  <Button size="sm" className="gap-1">
-                    <ShoppingCart className="h-4 w-4" />
-                    Add to Cart
-                  </Button>
+                    <Button size="sm" className="gap-1 rounded-full">
+                      <ShoppingCart className="h-4 w-4" />
+                      Enroll Now
+                    </Button>
+                  </div>
                 </div>
               </CardContent>
             </Card>

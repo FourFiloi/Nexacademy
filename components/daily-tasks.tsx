@@ -107,20 +107,22 @@ export function DailyTasks() {
       <CardHeader className="pb-3">
         <div className="flex justify-between items-center">
           <CardTitle className="text-lg">Daily To-Do List</CardTitle>
-          <div className="flex items-center gap-3">
-            <div className="flex items-center gap-2">
-              <div className="text-xs text-muted-foreground">
-                {xpStats.completedCount}/{tasks.length} Completed
-                {xpStats.completedCount > 5 && ` (${xpStats.countedForXP} counted for XP)`}
-              </div>
-              <Badge className="bg-primary/10 text-primary min-w-[90px] flex items-center justify-center whitespace-nowrap">
-                +{xpStats.earnedXP}/{xpStats.maxPossibleXP} XP
-              </Badge>
-            </div>
-            <Button onClick={() => setIsDialogOpen(true)} size="sm" className="flex items-center gap-1">
-              <Plus className="h-4 w-4" />
-              <span>Add Task</span>
-            </Button>
+          <Button
+            onClick={() => setIsDialogOpen(true)}
+            size="xs"
+            className="flex items-center gap-1 h-7 px-2 text-xs mr-1"
+          >
+            <Plus className="h-3 w-3" />
+            <span>Add Task</span>
+          </Button>
+        </div>
+        <div className="flex justify-between items-center mt-2.5">
+          <Badge className="bg-primary/10 text-primary min-w-[90px] flex items-center justify-center whitespace-nowrap">
+            +{xpStats.earnedXP}/{xpStats.maxPossibleXP} XP
+          </Badge>
+          <div className="text-xs text-muted-foreground">
+            {xpStats.completedCount}/{tasks.length} Completed
+            {xpStats.completedCount > 5 && ` (${xpStats.countedForXP} counted for XP)`}
           </div>
         </div>
         <Progress value={(xpStats.completedCount / Math.max(1, tasks.length)) * 100} className="h-2 mt-2" />

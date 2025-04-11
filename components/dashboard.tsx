@@ -602,21 +602,21 @@ export function Dashboard() {
           {/* Daily Quests Card - Moved to right column */}
           <Card className="w-full">
             <CardHeader className="pb-3">
-              <div className="flex justify-between items-center">
-                <CardTitle className="text-lg flex items-center gap-2">
-                  <Flag className="h-5 w-5 text-green-500" />
-                  Daily Quests
-                </CardTitle>
-                <div className="flex gap-2 items-center">
-                  <div className="text-xs text-muted-foreground">
+              <div className="flex flex-col space-y-2">
+                <div className="flex items-center">
+                  <Flag className="h-5 w-5 text-green-500 mr-2" />
+                  <CardTitle className="text-lg">Daily Quests</CardTitle>
+                </div>
+                <div className="flex items-center justify-between mt-1">
+                  <span className="text-xs text-muted-foreground">
                     {completedQuests}/{quests.length} completed
-                  </div>
-                  <Badge className="bg-primary/10 text-primary min-w-[90px] flex items-center justify-center whitespace-nowrap">
+                  </span>
+                  <Badge className="bg-primary/10 text-primary min-w-[90px] flex items-center justify-center">
                     +{totalXpEarned}/{totalXpAvailable} XP
                   </Badge>
                 </div>
+                <Progress value={(completedQuests / quests.length) * 100} className="h-2 mt-1" />
               </div>
-              <Progress value={(completedQuests / quests.length) * 100} className="h-2" />
             </CardHeader>
             <CardContent className="space-y-3">
               {quests
