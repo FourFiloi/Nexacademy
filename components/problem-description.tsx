@@ -82,19 +82,27 @@ export function ProblemDescription({ problem, activeTab, setActiveTab, testResul
 
       <div>
         <h2 className="text-lg font-semibold text-white mb-2">Sample 1:</h2>
-        <div className="grid grid-cols-2 gap-4 bg-[#1a1a1a] rounded-md overflow-hidden border border-[#2d2d2d]">
-          <div className="p-4">
-            <h3 className="text-sm font-medium text-gray-400 mb-2">Input</h3>
-            <pre className="bg-[#252525] p-3 rounded-md text-gray-300 overflow-x-auto">
-              {problem.sampleTestCases[0].input}
-            </pre>
-          </div>
-          <div className="p-4 border-l border-[#2d2d2d]">
-            <h3 className="text-sm font-medium text-gray-400 mb-2">Output</h3>
-            <pre className="bg-[#252525] p-3 rounded-md text-gray-300 overflow-x-auto">
-              {problem.sampleTestCases[0].expectedOutput}
-            </pre>
-          </div>
+        <div className="border border-[#2d2d2d] rounded-2xl overflow-hidden">
+          <table className="w-full">
+            <thead>
+              <tr className="bg-[#252525]">
+                <th className="text-left p-4 text-base font-medium text-white border-r border-[#2d2d2d] w-1/2">
+                  Input
+                </th>
+                <th className="text-left p-4 text-base font-medium text-white w-1/2">Output</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td className="p-4 text-white border-r border-t border-[#2d2d2d] align-top font-mono text-lg">
+                  {problem.sampleTestCases[0].input}
+                </td>
+                <td className="p-4 text-white border-t border-[#2d2d2d] align-top font-mono text-lg">
+                  {problem.sampleTestCases[0].expectedOutput}
+                </td>
+              </tr>
+            </tbody>
+          </table>
         </div>
       </div>
 
@@ -200,7 +208,7 @@ export function ProblemDescription({ problem, activeTab, setActiveTab, testResul
 
   return (
     <div
-      className={`flex flex-col h-full bg-[#121212] border-r border-[#2d2d2d] ${isFullscreen ? "fixed inset-0 z-50" : ""}`}
+      className={`flex flex-col h-full bg-[#121212] border-r border-[#2d2d2d] rounded-2xl ${isFullscreen ? "fixed inset-0 z-50" : ""}`}
     >
       <div className="flex items-center justify-between border-b border-[#2d2d2d] bg-[#1a1a1a] p-2">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">

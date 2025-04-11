@@ -38,7 +38,9 @@ export function CodeEditor({ problem, onRun, onSubmit, isRunning, isSubmitting }
   }
 
   return (
-    <div className={`flex flex-col h-full bg-[#121212] ${isFullscreen ? "fixed inset-0 z-50" : ""}`}>
+    <div
+      className={`flex flex-col h-full bg-[#121212] rounded-2xl overflow-hidden ${isFullscreen ? "fixed inset-0 z-50" : ""}`}
+    >
       <div className="flex items-center justify-between border-b border-[#2d2d2d] bg-[#1a1a1a] p-2">
         <div className="flex items-center">
           <span className="text-[#0091FF] mr-2">{"<>"}</span>
@@ -96,15 +98,16 @@ export function CodeEditor({ problem, onRun, onSubmit, isRunning, isSubmitting }
         </div>
 
         {showTestCases && (
-          <div className="bg-[#1a1a1a] p-4">
+          <div className="bg-[#1a1a1a] p-4 rounded-b-2xl">
             <Tabs defaultValue="1" value={activeTestCase} onValueChange={setActiveTestCase}>
-              <TabsList className="bg-[#252525] mb-4">
+              <TabsList className="bg-[#252525] mb-4 flex gap-2 p-1">
                 {problem.sampleTestCases.map((testCase) => (
                   <TabsTrigger
                     key={testCase.id}
                     value={testCase.id.toString()}
-                    className="data-[state=active]:bg-[#0091FF] data-[state=active]:text-white"
+                    className="flex items-center gap-2 data-[state=active]:bg-transparent data-[state=active]:text-white"
                   >
+                    <div className="w-2 h-2 rounded-full bg-green-500" />
                     Case {testCase.id}
                   </TabsTrigger>
                 ))}
@@ -112,19 +115,27 @@ export function CodeEditor({ problem, onRun, onSubmit, isRunning, isSubmitting }
 
               {problem.sampleTestCases.map((testCase) => (
                 <TabsContent key={testCase.id} value={testCase.id.toString()} className="m-0">
-                  <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <h3 className="text-sm font-medium text-gray-400 mb-2">Input</h3>
-                      <pre className="bg-[#252525] p-3 rounded-md text-gray-300 overflow-x-auto text-sm">
-                        {testCase.input}
-                      </pre>
-                    </div>
-                    <div>
-                      <h3 className="text-sm font-medium text-gray-400 mb-2">Output</h3>
-                      <pre className="bg-[#252525] p-3 rounded-md text-gray-300 overflow-x-auto text-sm">
-                        {testCase.expectedOutput}
-                      </pre>
-                    </div>
+                  <div className="border border-[#2d2d2d] rounded-2xl overflow-hidden">
+                    <table className="w-full">
+                      <thead>
+                        <tr className="bg-[#252525]">
+                          <th className="text-left p-4 text-base font-medium text-white border-r border-[#2d2d2d] w-1/2">
+                            Input
+                          </th>
+                          <th className="text-left p-4 text-base font-medium text-white w-1/2">Output</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <td className="p-4 text-white border-r border-t border-[#2d2d2d] align-top font-mono text-lg">
+                            {testCase.input}
+                          </td>
+                          <td className="p-4 text-white border-t border-[#2d2d2d] align-top font-mono text-lg">
+                            {testCase.expectedOutput}
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
                   </div>
                 </TabsContent>
               ))}

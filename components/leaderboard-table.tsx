@@ -93,7 +93,14 @@ export function LeaderboardTable({ data, showTier = false, showContestPoints = f
   // Check if current user is not in the top 10
   const currentUserNotInTop = currentUser && !data.slice(0, 10).some((user) => user.isCurrentUser)
 
-  const institutions = [{ id: "MIT", name: "MIT" }, { id: "Harvard", name: "Harvard" }]
+  // Map of institution IDs to names
+  const institutionMap: Record<string, string> = {
+    mit: "MIT",
+    stanford: "Stanford University",
+    harvard: "Harvard University",
+    berkeley: "UC Berkeley",
+    cmu: "Carnegie Mellon University",
+  }
 
   return (
     <div className="space-y-4">
@@ -124,8 +131,6 @@ export function LeaderboardTable({ data, showTier = false, showContestPoints = f
                 transition={{ duration: 0.2 }}
               >
                 <td className="px-4 py-3">{getRankIcon(user.rank)}</td>
-                {/* Optionally, you can add the institution to the student information display in the table
-                For example, in the student cell: */}
                 <td className="px-4 py-3">
                   <div className="flex items-center gap-3">
                     <Avatar className="h-8 w-8 border">
@@ -148,8 +153,9 @@ export function LeaderboardTable({ data, showTier = false, showContestPoints = f
                           : user.coursesCompleted
                             ? `${user.coursesCompleted} courses completed`
                             : ""}
-                        {user.institution && institutions.find(i => i.id === user.institution) &&
-                          ` • ${institutions.find(i => i.id === user.institution)?.name}`}
+                        {user.institution &&
+                          institutionMap[user.institution] &&
+                          ` • ${institutionMap[user.institution]}`}
                       </div>
                     </div>
                   </div>
@@ -268,21 +274,23 @@ export function LeaderboardTable({ data, showTier = false, showContestPoints = f
                             .split(" ")
                             .map((n) => n[0])
                             .join("")}
-                      </AvatarFallback>
-                    </Avatar>
-                    <div>
-                      <div className="font-medium">
-                        {currentUser.name}
-                        <span className="ml-2 text-xs text-primary">(You)</span>
-                      </div>
-                      <div className="text-xs text-muted-foreground">
-                        {showContestPoints && currentUser.problemsSolved
-                          ? `${currentUser.problemsSolved} problems solved`
-                          : currentUser.coursesCompleted
-                            ? `${currentUser.coursesCompleted} courses completed`
-                            : ""}
-                        {currentUser.institution && institutions.find(i => i.id === currentUser.institution) &&
-                          ` • ${institutions.find(i => i.id === currentUser.institution)?.name}`}
+                        </AvatarFallback>
+                      </Avatar>
+                      <div>
+                        <div className="font-medium">
+                          {currentUser.name}
+                          <span className="ml-2 text-xs text-primary">(You)</span>
+                        </div>
+                        <div className="text-xs text-muted-foreground">
+                          {showContestPoints && currentUser.problemsSolved
+                            ? `${currentUser.problemsSolved} problems solved`
+                            : currentUser.coursesCompleted
+                              ? `${currentUser.coursesCompleted} courses completed`
+                              : ""}
+                          {currentUser.institution &&
+                            institutionMap[currentUser.institution] &&
+                            ` • ${institutionMap[currentUser.institution]}`}
+                        </div>
                       </div>
                     </div>
                   </td>
