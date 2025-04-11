@@ -31,11 +31,11 @@ interface EditProfileDialogProps {
 
 export function EditProfileDialog({ user, isOpen, onClose, onSave }: EditProfileDialogProps) {
   const [formData, setFormData] = useState({
-    name: user.name,
-    username: user.username,
-    email: user.email,
-    bio: user.bio,
-    interests: [...user.interests],
+    name: user?.name || "",
+    username: user?.username || "",
+    email: user?.email || "",
+    bio: user?.bio || "",
+    interests: [...(user?.interests || [])],
   })
   const [newInterest, setNewInterest] = useState("")
 
@@ -66,6 +66,15 @@ export function EditProfileDialog({ user, isOpen, onClose, onSave }: EditProfile
     onSave(formData)
   }
 
+  // Create avatar fallback initials safely
+  const getInitials = () => {
+    if (!user?.name) return "U"
+    return user.name
+      .split(" ")
+      .map((n) => n[0])
+      .join("")
+  }
+
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-[500px]">
@@ -75,13 +84,8 @@ export function EditProfileDialog({ user, isOpen, onClose, onSave }: EditProfile
         <form onSubmit={handleSubmit} className="space-y-4 py-4">
           <div className="flex justify-center mb-4">
             <Avatar className="h-24 w-24 border-2 border-primary/20">
-              <AvatarImage src={user.avatar} alt={user.name} />
-              <AvatarFallback className="text-xl">
-                {user.name
-                  .split(" ")
-                  .map((n) => n[0])
-                  .join("")}
-              </AvatarFallback>
+              <AvatarImage src={user?.avatar} alt={user?.name || "User"} />
+              <AvatarFallback className="text-xl">{getInitials()}</AvatarFallback>
             </Avatar>
           </div>
 

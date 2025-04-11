@@ -29,7 +29,16 @@ export function ModuleList({ modules, courseId }: ModuleListProps) {
   }
 
   const handleStartTest = (moduleId: string, testId: string) => {
-    router.push(`/courses/${courseId}/${moduleId}/tests`)
+    // Extract the difficulty level from the testId (e.g., "variables-data-types-easy")
+    const difficultyMatch = testId.match(/-(\w+)$/)
+    const difficulty = difficultyMatch ? difficultyMatch[1] : "easy"
+
+    // For now, we'll use a fixed problem ID based on the module and difficulty
+    // In a real app, this would fetch the first problem of the selected test level
+    const problemId = `${moduleId}-${difficulty}-1`
+
+    // Route to the problem-solving page with the problem ID
+    router.push(`/problem-solving/${problemId}`)
   }
 
   const getStatusIcon = (status: string) => {
